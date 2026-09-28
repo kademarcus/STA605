@@ -37,7 +37,8 @@ numerical_estimate <- function(f,a,b,n, rule){
 
 ```
 ### 2. 
-By hand the rectangle rule should be $$ 1 * e^0 = 1 $$ the trapezoidal rule should be $$ \frac{1}{2}*(e^0 + e^1) = \frac{1+e}{2} = 1.859$$ and the Simpsons rule requires even number of sub intervals, so I will not do that by hand. Yes my function matches these values
+By hand the rectangle rule should be $$ 1 * e^0 = 1 $$ the trapezoidal rule should be $$ \frac{1}{2}*(e^0 + e^1) = \frac{1+e}{2} = 1.859$$ a
+nd the Simpsons rule requires even number of sub intervals, so I will not do that by hand. Yes my function matches these values
 ```{r}
 f_x <- function(x){
   exp(x)
@@ -48,7 +49,8 @@ numerical_estimate(f_x,0,1,1,"trapezoid") # 1.859
 ```
 
 ### 3. 
-By hand the rectangle rule should be $$\frac{1}{2}*(e^0 + e^.5) = 1.324$$  the trapezoidal rule should be $$\frac{1}{4} * (e^0 + 2*e^.5 + e^1) = 1.754$$ and simpsons rule should be $$ \frac{1}{6} * (e^0 + 4*e^.5 + e^1) = 1.718=9$$ Yes my functions match
+By hand the rectangle rule should be $$\frac{1}{2}*(e^0 + e^.5) = 1.324$$  the trapezoidal rule should be $$\frac{1}{4} * (e^0 + 2*e^.5 + e^1) = 1.754$$ 
+and simpsons rule should be $$ \frac{1}{6} * (e^0 + 4*e^.5 + e^1) = 1.718=9$$ Yes my functions match
 ```{r}
 numerical_estimate(f_x,0,1,2,"rectangle") # 1.324
 numerical_estimate(f_x,0,1,2,"trapezoid") # 1.754
@@ -56,7 +58,8 @@ numerical_estimate(f_x,0,1,2,"simpsons") # 1.719
 ```
 
 ### 4. 
-Since simpsons method requires even subintervals the error did not do much better than other methods with 2n. However, when n=10 the error is extremely close to 0 and performs much better than the other two methods with that many subintervals. 
+Since simpsons method requires even subintervals the error did not do much better than other methods with 2n. 
+However, when n=10 the error is extremely close to 0 and performs much better than the other two methods with that many subintervals. 
 ```{r}
 actual <- integrate(f_x, 0,1)$value
 actual #1.718282

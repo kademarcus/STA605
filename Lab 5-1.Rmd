@@ -1,0 +1,108 @@
+---
+title: "Lab 5"
+author: "Kade Spaulding"
+date: "2026-09-17"
+output: html_document
+---
+1.
+```{r}
+x <- sample(1:365, 25, replace = TRUE)
+
+any(duplicated(x))#False, so none the same
+```
+
+2.
+```{r}
+genRoom <- function(n.indiv){
+  x <- sample(1:365, n.indiv, replace = TRUE)
+  if (any(duplicated(x))){
+    print("There is a shared birthday")
+  } else {
+    print("There is no shared birthday")
+  }
+}
+```
+
+3.  
+```{r}
+#a. elapsed was 0.00
+system.time({
+  rooms <- matrix(NA, nrow=1000, ncol=25)
+
+  for (i in 1:1000){
+    rooms[i,] <- sample(1:365, 25, replace = TRUE)
+  }
+})
+
+#b. elasped was 0.02
+system.time({
+  rooms2 <- t(sapply(1:1000, function(i) sample(1:365, 25, replace = TRUE)))
+})
+
+```
+c. The preallocated one with the for loop took less time according to system.time. I would guess the apply function would take a similar amount of time, as the two were only 2 hundreths of a second off 
+4.
+```{r}
+simRooms <- function(n.indiv, n.sim){
+    rooms <- matrix(NA, nrow=n.sim, ncol=n.indiv)
+    no_shared <- 0
+    
+    for (i in 1:n.sim){
+      rooms[i,] <- sample(1:365, n.indiv, replace = TRUE)
+    
+      
+    
+      if (!any(duplicated(rooms[i,]))) {
+      no_shared <- no_shared + 1}}
+    
+    return(no_shared/n.sim)
+}
+
+n <- seq(2, 60, by = 2)
+
+prob <- sapply(n, function(x) simRooms(x, 1000))
+```
+
+5. As the room gets larger the probability of no shared birthdays gets smaller, which is what I would expect.
+```{r}
+results <- data.frame(n, prob)
+library(ggplot2)
+
+ggplot(results, aes(x = n, y = prob)) +
+      geom_point() +
+      geom_line() +
+      labs(
+      title = "Probability of No Shared Birthdays by Room Size",
+      x = "Number of Individuals",
+      y = "Probability of No Shared Birthdays"
+  )
+
+```
+
+6. We find the same thing across multiple simulations, with the probability decreasing with number of people in a room increasing, thought the smaller simulations are a little less of a smooth decrease.
+```{r}
+n2 <- c(50,100,500,1000,5000)
+results2 <- data.frame()
+
+for (i in n2) {
+  prob2 <- sapply(n, function(x) simRooms(x, i))
+  
+  temp <- data.frame(
+    n,
+    i,
+    prob2
+  )
+  
+  results2 <- rbind(results2, temp)
+}
+
+ggplot(results2, aes(x = n, y = prob2, color = factor(i))) +
+  geom_point() +
+  geom_line() +
+  labs(
+    title = "Probability of No Shared Birthdays by Room Size",
+    x = "Number of Individuals",
+    y = "Probability of No Shared Birthdays",
+    color = "Number of Rooms Simulated"
+  )
+```

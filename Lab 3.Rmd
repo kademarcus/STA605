@@ -1,0 +1,94 @@
+---
+title: "Lab 3"
+author: "Kade Spaulding"
+date: "2026-09-04"
+output: pdf_document
+---
+Read Data
+```{r}
+setwd("/cloud/project")
+
+texting_data <- read.table('cleanedtextingdata.csv',sep=",",header=TRUE)
+head(texting_data)
+```
+1. 
+```{r}
+boxplot(texting_data$First.min, 
+        main = 'Time to recieve text on Previous Day', 
+        ylab = "Minutes Past 4:30")
+```
+2.
+```{r}
+boxplot(texting_data$T1.min, main = "Time to recieve first text", ylab ="Minutes Past 4:30")
+boxplot(texting_data$T2.min, main = "Time to recieve second text", ylab ="Minutes Past 4:30")
+boxplot(texting_data$T3.min, main = "Time to recieve third text", ylab ="Minutes Past 4:30")
+boxplot(texting_data$T4.min, main = "Time to recieve fourth text", ylab ="Minutes Past 4:30")
+boxplot(texting_data$T5.min, main = "Time to recieve fifth text", ylab ="Minutes Past 4:30")
+```
+3.
+```{r}
+#First min
+print("First Text summary")
+mean(texting_data$First.min, na.rm = TRUE)
+sd(texting_data$First.min, na.rm = TRUE)
+median(texting_data$First.min, na.rm = TRUE)
+IQR(texting_data$First.min, na.rm = TRUE)
+#T1
+print("Text 1 Summary")
+mean(texting_data$T1.min, na.rm = TRUE)
+sd(texting_data$T1.min, na.rm = TRUE)
+median(texting_data$T1.min, na.rm = TRUE)
+IQR(texting_data$T1.min, na.rm = TRUE)
+#T2
+print("Text 2 Summary")
+mean(texting_data$T2.min, na.rm = TRUE)
+sd(texting_data$T2.min, na.rm = TRUE)
+median(texting_data$T2.min, na.rm = TRUE)
+IQR(texting_data$T2.min, na.rm = TRUE)
+#T3
+print("Text 3 Summary")
+mean(texting_data$T3.min, na.rm = TRUE)
+sd(texting_data$T3.min, na.rm = TRUE)
+median(texting_data$T3.min, na.rm = TRUE)
+IQR(texting_data$T3.min, na.rm = TRUE)
+#T4
+print("Text 4 Summary")
+mean(texting_data$T4.min, na.rm = TRUE)
+sd(texting_data$T4.min, na.rm = TRUE)
+median(texting_data$T4.min, na.rm = TRUE)
+IQR(texting_data$T4.min, na.rm = TRUE)
+#T5
+print("Text 5 Summary")
+mean(texting_data$T5.min, na.rm = TRUE)
+sd(texting_data$T5.min, na.rm = TRUE)
+median(texting_data$T5.min, na.rm = TRUE)
+IQR(texting_data$T5.min, na.rm = TRUE)
+
+```
+4.
+```{r}
+#4.
+first_second <- texting_data$T2.min - texting_data$T1.min
+second_third <- texting_data$T3.min - texting_data$T2.min
+third_fourth <- texting_data$T4.min - texting_data$T3.min
+fourth_fifth <- texting_data$T5.min - texting_data$T4.min
+
+par(mfrow=c(2,2))
+#boxplots
+boxplot(first_second, main = "Difference Between First and Second")
+boxplot(second_third, main = "Difference Between Second and Third")
+boxplot(third_fourth, main = "Difference Between Third and Fourth")
+boxplot(fourth_fifth, main = "Difference Between Fourth and Fifth")
+```
+5. 
+```{r}
+boxplot(texting_data$Count ~ texting_data$Section, 
+        xlab = "Section",
+        ylab = "Number of Texts",
+        main = "Count of Texts per Section")
+```
+
+6.
+The time it took students to recieve their first text after 4:30 was roughly similar across both days, and the range increases for each consecutive text. The number of texts across sections is also roughly similar with the IQR of each being close.\
+7.
+Some of the columns had NA data points, so I had to remove them for certain summary statistics. There is also a negative value in one of the columns (time to recieve second text). I don't know what went wrong when collecting the data as it could have been ane error with a negative sign or something else, so instead of removing it what I would do practically is ask the person who created the data to see how they would like me to handle it

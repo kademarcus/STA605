@@ -1,0 +1,124 @@
+---
+title: "a mu`R`de`R` mystery"
+author: "Kade Spaulding"
+date: "09/11/2026"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+
+## Load the data
+The following chunk loads (and installs, if necessary) the required libraries and imports the data:  run this code in your console (use the green right-pointing arrow in the code chunk below), before starting any other work on this assignment.  **DO NOT** edit or delete anything in the following code chunk!!
+```{r, include=FALSE}
+if (!require("dplyr")) install.packages("dplyr")
+library(dplyr)
+crime_scene_report <- as.data.frame( readr::read_csv( url(
+      "https://raw.githubusercontent.com/annalantzsmith/STA-605/master/crime_scene_report.csv")))
+drivers_license <- as.data.frame( readr::read_csv( url(
+      "https://raw.githubusercontent.com/annalantzsmith/STA-605/master/drivers_license.csv")))
+facebook_event_checkin <- as.data.frame( readr::read_csv( url(
+      "https://raw.githubusercontent.com/annalantzsmith/STA-605/master/facebook_event_checkin.csv")))
+get_fit_now_checkin <- as.data.frame( readr::read_csv( url(
+      "https://raw.githubusercontent.com/annalantzsmith/STA-605/master/get_fit_now_checkin.csv")))
+get_fit_now_member <- as.data.frame( readr::read_csv( url(
+      "https://raw.githubusercontent.com/annalantzsmith/STA-605/master/get_fit_now_member.csv")))
+income <- as.data.frame( readr::read_csv( url(
+      "https://raw.githubusercontent.com/annalantzsmith/STA-605/master/income.csv")))
+interview <- as.data.frame( readr::read_csv( url(
+      "https://raw.githubusercontent.com/annalantzsmith/STA-605/master/interview.csv")))
+person <- as.data.frame( readr::read_csv( url(
+      "https://raw.githubusercontent.com/annalantzsmith/STA-605/master/person.csv")))
+```
+
+## Practice code
+Feel free to add code chunks (CMD + OPTION + I on Mac; see [more `Rmd` keyboard shortcuts here](https://bookdown.org/yihui/rmarkdown-cookbook/rstudio-shortcuts.html)) here to practice with any of the functions or lines of code introduced in the tutorial.
+
+Remember that at any time, you can Preview or Knit your `Rmd` file to check that everything will work as intended before you submit your assignment to be graded.
+
+## Solutions
+1. The person object is a data frame with 10011 rows and 8 columns.
+
+```{r}
+class(person)
+dim(person)
+```
+
+2.  The types of crimes in the crime scene report data are robbery, murder, theft, fraud, arson, bribery, assault, smuggling, and blackmail.
+There were 148 arsons, 145 assaults, 130 blackmails, 135 briberys, 130 frauds, 148 murders, 134 robberies, 117 smugglings, and 141 thefts
+```{r}
+unique(crime_scene_report$type)
+table(crime_scene_report$type)
+```
+3. Filtering just by murder as the type, 20180115 as the date (January 15th, 2018), and the city as R city yields this description: "Security footage shows that were 2 witnesses. The first witness lives at the last house on Northwestern Drive. The second witness, named Annabel, lives somewhere on "Franklin Ave". 
+```{r}
+first_clue <- crime_scene_report %>%
+    filter( 
+       type == "murder" &
+       date == 20180115 &
+       city == "R City" 
+      )
+first_clue$description
+```
+4.Annabel Miller is one of the witnesses (from problem 3.) The other witness is Morty Schapiro, since he is the one with the largest address number on Northwestern Drive so he would be the last house.
+```{r}
+witness1 <- person %>%
+  filter(address_street_name == "Franklin Ave")
+
+witness2 <- person %>%
+  filter(address_street_name == "Northwestern Dr",
+         address_number == max(address_number))
+
+witness2$name
+```
+5. 
+```{r}
+witness_transcripts <- merge(interview, person, by.x = "person_id", by.y = "id")
+
+first_witness_transcripts <- witness_transcripts %>%
+  filter(name == "Morty Schapiro"|
+       name == "Annabel Miller")
+
+first_witness_transcripts$transcript
+```
+6. Filtering by membership gives us either Joe Germuska or Jeremy Bowers. Looking at the license plate data frame it has to be one of the males, so filtering the person data frame by license id shows us it must be Jeremy Bowers, since the other male is not Joe Germuska.
+```{r}
+get_fit_now_checkin_date <- get_fit_now_checkin %>%
+  filter(check_in_date == "20180109")
+
+final_suspects <- get_fit_now_member %>%
+  filter(membership_status == "gold",
+         id == "48Z55"|id == "48Z7A") #either Joe Germuska or Jeremy Bowers
+
+final_suspects <- person %>%
+  filter(license_id == "423327" | license_id == "664760") 
+```
+7. The true villain behind this crime is Miranda Priestly.  
+```{r}
+interview_suspect <- witness_transcripts %>%
+  filter(name == "Jeremy Bowers")
+interview_suspect$transcript
+```
+
+```{r}
+real_suspects <- drivers_license %>%
+  filter(car_make == "Tesla", 
+         car_model == "Model S",
+         gender == "female", 
+         hair_color == "red") #either Miranda Priestly,Regina George, or Red Korb
+
+facebook_event_checkin$event_name = "SQL Symphony Concert"
+
+facebook_event_checkin <- facebook_event_checkin %>%
+  filter(date >= "20171201" & date <= "20171231")%>%
+  group_by(person_id) %>%
+  filter(n()==3)
+
+real_suspect_final <- person %>%
+  filter(id == "23035"|
+           id == "24556"|
+           id == "66276"|
+           id == "99716") #has to be Miranda Priestley (only one of our final suspects to appear)
+```
+

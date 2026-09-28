@@ -1,0 +1,167 @@
+---
+title: "HW 3"
+author: "Kade Spaulding"
+date: "2026-09-16"
+output: pdf_document
+---
+##First Script
+
+1. This is Bingo_2.R
+```{r}
+#source("C:/Users/kmsp240/Downloads/Bingo_2.R") desktop
+source("Bingo_2.R") #cloud
+```
+
+2. It is relatively easy to follow but they did it very different to what I did, and in some places it is a little unclear what is being done. 2 difficulty 
+
+3. 
+```{r}
+#a. 
+my_card <- create_bingo_card()#HAD TO ASSIGN TO OBJECT SO DIDNT GUESS NUMBER CALLED
+my_card 
+
+#b.
+mark_bingo_card(my_card, 67)
+
+#c.
+check_bingo_win(my_card)
+
+#d. 
+#CANNOT DO THIS PART, MAKES NEW CARD EACH TIME, could use for loop in the function rather than a function of one
+```
+
+5. It was very easy, just needed to replace sampling from size 5 to size 4.
+```{r}
+create_bingo_card_test <- function() {
+  
+  # Randomly select 4 different numbers for column B
+  B <- sample(1:15, 4, replace = FALSE)
+  
+  # Randomly select 4 different numbers for column I
+  I <- sample(16:30, 4, replace = FALSE)
+  
+  # Randomly select 4 different numbers for column N
+  N <- sample(31:45, 4, replace = FALSE)
+  
+  # Randomly select 4 different numbers for column G
+  G <- sample(46:60, 4, replace = FALSE)
+  
+  # Randomly select 4 different numbers for column O
+  O <- sample(61:75, 4, replace = FALSE)
+  
+  # Combine the 4 columns into one 5 by 5 matrix
+  card <- cbind(B, I, N, G, O)
+  
+  # Set the center position as the free space, NA represents a position that is already marked
+  card[3, 3] <- NA
+  
+  # Return the completed Bingo card
+  return(card)
+}
+```
+
+6. Extremely easy. 1 difficulty
+```{r}
+check_bingo_win_test <- function(card) {
+  
+  # Check each of the five columns
+  for (j in 1:5) {
+    if (all(is.na(card[, j]))) {
+      return("Bingo! The card wins.")
+    }
+  }
+  
+  # Check the diagonal from upper-left to lower-right
+  if (all(is.na(diag(card)))) {
+    return("Bingo! The card wins.")
+  }
+  
+  # Check the diagonal from upper-right to lower-left
+  if (all(is.na(diag(card[, 5:1])))) {
+    return("Bingo! The card wins.")
+  }
+  
+  # Return this statement if no complete line is marked
+  return("The card does not win yet.")
+}
+```
+7. They used the built in diaganol for the left to right, for the right to left they go backwards from 5 to 1 so all you would have to do is change the 5 to whatever amount of rows or columns you want to do. So while it is not the most general, it would be easy to change. 9 on general scale.
+
+8. I liked that they used NA to mark called bingo spaces and the free space. Since there are a lot of built in functions with NAs in R the code can be more generalized, rather than changing them to 0 and doing numerical calculations (what I did).
+
+
+## Second Script
+1. This is Bingo_9.R
+```{r}
+#source("C:/Users/kmsp240/Downloads/Bingo_9.R") desktop
+source("Bingo_9.R") #cloud
+```
+
+2. It is easy to read but some of the lines seem to do a lot in one (N column for example) that I am not sure I follow. 4 Difficulty
+
+3.
+```{r}
+#a. 
+my_card <- createBingoCard()
+my_card
+
+#b. 
+marked_card <- markBingoCard(my_card, 2) #had to create object to call it for next part
+
+#c. 
+checkBingo(marked_card)
+
+#d. Cannot do, creates new marked card everytime. Again could use for loop or some aggregator
+```
+
+5. Changing it to 4 rows was a little conceptually confusing due to how they handled the N column. Also had to change sizes of other columns. Difficulty 6, not sure if I correctly handled the N column
+```{r}
+createBingoCard_test <- function() 
+{
+  B <- sample(1:15, replace = FALSE, size = 4)
+  I <- sample(16:30, replace = FALSE, size = 4)
+  N <- sample(31:45, replace = FALSE, size = 3)
+  N <- append(N, values = 0, after = 1)
+  
+  G <- sample(46:60, replace = FALSE, size = 4)
+  O <- sample(61:75, replace = FALSE, size = 4)
+  
+  Card <- matrix(data = c(B,I,N,G,O), nrow = 4, ncol = 5)
+  colnames(Card) <- c('B', 'I', 'N', 'G', 'O')
+  return (Card)
+}
+```
+
+6. Easy, just deleted any row sum conditional. 1 difficulty
+```{r}
+checkBingo_test <- function(markedCard)
+{
+  cs <- colSums(markedCard)
+  # if sums == 5 then its a bingo
+  
+  if (any(cs == 5))
+  {
+    print("You Have a Bingo")
+    return(invisible())
+  }
+  
+  if (sum(diag(markedCard)) == 5)
+  {
+    print("You Have a Bingo")
+    return(invisible())
+  }
+  
+  if (sum(markedCard[cbind(1:n, n:1)]) == 5)
+  {
+    print("You Have a Bingo")
+    return(invisible())
+  }
+  
+  print("You do not have a bingo")
+  return(invisible())
+}
+```
+
+7. They used the built in diaganol for left to right, and for right to left they used c bind to make a new "column" and then check the sum. Pretty general would just need to change the sum to == new dimension. 8 generality
+
+8. The script was a lot shorter than mine but did basically the same thing, so that is what I would try and do differently. Though nothing syntax wise stood out as something I would do instead.

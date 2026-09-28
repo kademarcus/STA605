@@ -1,0 +1,186 @@
+---
+title: "HW4"
+author: "Kade Spaulding"
+date: "2026-09-23"
+output: pdf_document
+---
+## 1. 
+```{r}
+source("C:/Users/kmsp240/Downloads/HW2_KS.R")
+```
+
+## 2. 
+### a. For one game
+```{r}
+card <- createBingo()
+
+called_numbers <- sample(1:75, 75)
+
+marked <- matrix(0, nrow=5, ncol=5)
+marked[3,3] <- 1
+
+for (i in 1:75){
+  
+  marked <- markBingo(card, marked, called_numbers[i])
+  
+  win_type <- checkBingo(marked)
+  
+  if (length(win_type) > 0){
+    break
+  }
+}
+
+win_type
+i
+```
+### b. for 25 games
+```{r}
+win_types1 <- c()
+
+for (game in 1:25) {
+  
+  card <- createBingo()
+  
+  called_numbers <- sample(1:75, 75)
+  
+  marked <- matrix(0, nrow=5, ncol=5)
+  marked[3,3] <- 1
+  
+  for (i in 1:75) {
+    
+    marked <- markBingo(card, marked, called_numbers[i])
+    
+    win_type1 <- checkBingo(marked)
+    
+    if (length(win_type1) > 0) {
+      break
+    }
+  }
+  
+  win_types1 <- c(win_types1, win_type1)
+}
+
+barplot(table(win_types1),
+        main = "Frequency of Bingo Win Types for 25 games",
+        ylab = "Number of Games")
+
+
+win_types2 <- c()
+
+for (game in 1:50) {
+  
+  card2 <- createBingo()
+  
+  called_numbers2 <- sample(1:75, 75)
+  
+  marked2 <- matrix(0, nrow=5, ncol=5)
+  marked2[3,3] <- 1
+  
+  for (i in 1:75) {
+    
+    marked2 <- markBingo(card2, marked2, called_numbers2[i])
+    
+    win_type2 <- checkBingo(marked2)
+    
+    if (length(win_type2) > 0) {
+      break
+    }
+  }
+  
+  win_types2 <- c(win_types2, win_type2)
+}
+
+barplot(table(win_types2),
+        main = "Frequency of Bingo Win Types for 50 games",
+        ylab = "Number of Games")
+
+win_types3 <- c()
+for (game in 1:100) {
+  
+  card3 <- createBingo()
+  
+  called_numbers3 <- sample(1:75, 75)
+  
+  marked3 <- matrix(0, nrow=5, ncol=5)
+  marked3[3,3] <- 1
+  
+  for (i in 1:75) {
+    
+    marked3 <- markBingo(card3, marked3, called_numbers3[i])
+    
+    win_type3 <- checkBingo(marked3)
+    
+    if (length(win_type3) > 0) {
+      break
+    }
+  }
+  
+  win_types3 <- c(win_types3, win_type3)
+}
+
+barplot(table(win_types3),
+        main = "Frequency of Bingo Win Types for 100 games",
+        ylab = "Number of Games")
+
+
+win_types4 <- c()
+for (game in 1:100) {
+  
+  card4 <- createBingo()
+  
+  called_numbers4 <- sample(1:75, 75)
+  
+  marked4 <- matrix(0, nrow=5, ncol=5)
+  marked4[3,3] <- 1
+  
+  for (i in 1:75) {
+    
+    marked4 <- markBingo(card4, marked4, called_numbers4[i])
+    
+    win_type4 <- checkBingo(marked4)
+    
+    if (length(win_type4) > 0) {
+      break
+    }
+  }
+  
+  win_types4 <- c(win_types4, win_type4)
+}
+
+barplot(table(win_types4),
+        main = "Frequency of Bingo Win Types for 1000 games",
+        ylab = "Number of Games")
+```
+It seems that column and row wins are relatively equal across simulations, with diagonal being lower than both by quite a large amount. Intuitively this makes sense, as there are 5 different ways to win with a column or row, as opposed to the two ways to win with diagonals
+
+## 3. 
+```{r}
+win_types4 <- c()
+numbers_called <- c()
+for (game in 1:100) {
+  
+  card4 <- createBingo()
+  
+  called_numbers4 <- sample(1:75, 75)
+  
+  marked4 <- matrix(0, nrow=5, ncol=5)
+  marked4[3,3] <- 1
+  
+  for (i in 1:75) {
+    
+    marked4 <- markBingo(card4, marked4, called_numbers4[i])
+    
+    win_type4 <- checkBingo(marked4)
+    
+    if (length(win_type4) > 0) {
+      break
+    }
+  }
+  
+  win_types4 <- c(win_types4, win_type4)
+  numbers_called <- c(numbers_called, rep(i, length(win_type4)))
+}
+
+tapply(numbers_called, win_types4, mean)
+```
+Diagonal has a free space so one less number needs to be called to have a win.

@@ -1,0 +1,106 @@
+---
+title: "Hw5"
+output: html_document
+date: "2026-09-27"
+---
+## 1. 
+```{r}
+library(ggplot2)
+
+theta <- seq(0,2*pi, length.out = 1000)
+
+x <- 3*cos(theta)
+y <- 3*sin(theta)
+
+circle <- data.frame(x,y)
+
+ggplot(circle, aes(x,y)) +
+  coord_fixed(xlim = c(-3, 3), ylim = c(-3, 3))+
+  geom_path()
+```
+
+## 2. 
+```{r}
+xnew <- runif(1000, -3, 3)
+ynew <- runif(1000, -3, 3)
+
+inside <- xnew^2 + ynew^2 <= 9
+
+dots <- data.frame(xnew, ynew) 
+ggplot(dots, aes(xnew, ynew, color = inside))+
+  geom_point()+
+   geom_path(data = circle, aes(x = x, y = y), color = "black") +
+   coord_fixed(xlim = c(-3, 3), ylim = c(-3, 3))
+```
+## 3.
+Area of the box is 36 since it is 6 x 6. So we can just find the ratio of inside dots to the total dots and multiply that by 36 to estimate the area of this circle. The area is quite close (around 0.1 off)
+
+```{r}
+area_estimate <- (sum(inside)/1000) * 36
+area_estimate
+
+area <- pi*9
+area
+```
+
+## 4. 
+Can estimate pi with r = 1.  Get 3.12, which is pretty close to the actual value of 3.14
+```{r}
+xnew <- runif(1000, -1, 1)
+ynew <- runif(1000, -1, 1)
+
+inside <- xnew^2 + ynew^2 <= 1
+
+area_estimate <- (sum(inside)/1000) * 4
+area_estimate
+```
+## 5. 
+Changing the dimensions would not be would I would do since making the radius 1 is the easiest way to estimate pi (since the area equation becomes pi times one.) I would increase the number of points since i believe that would be a better way to get the area since more dots in the circle and more dots outside sounds more precise rather than scattered dots. 
+
+## 6. 
+I added many more simulated points to get to 3.141 (like what i expected)
+```{r}
+xnew <- runif(10000000, -1, 1)
+ynew <- runif(10000000, -1, 1)
+
+inside <- xnew^2 + ynew^2 <= 1
+
+area_estimate <- (sum(inside)/10000000) * 4
+area_estimate
+```
+## 7. 
+```{r}
+rm(list=ls())
+source("C:/Users/kadem/Downloads/BatmanFunctions.R")
+
+plotBatman()
+
+
+```
+
+## 8. 
+```{r}
+xbat <- runif(1000, -6, 6)
+ybat <- runif(1000, -6, 6)
+area_dots <- rep(NA, 1000)
+for (i in 1:1000){
+  area_dots[i] <- checkInBat(xbat[i],ybat[i])
+}
+
+batdots <- data.frame(xbat, ybat, area_dots)
+
+plotBatman() +
+  geom_point(data = batdots, aes(x = xbat, y = ybat, color = area_dots))
+```
+
+## 9. 
+Area is pretty close, I assume it will be a lot closer with higher points simulated, like the circle estimate
+```{r}
+area_estimate <- (sum(area_dots)/1000) * 144
+area_estimate
+
+actual_area <- (955/48) - ((2/7) * (
+  (2*sqrt(33) + (7*pi) + (3*sqrt(10)*(pi-1))))) +
+  (21 *( (acos(3/7)) + (acos(4/7))))
+actual_area
+```

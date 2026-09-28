@@ -1,0 +1,149 @@
+---
+title: "HW 1"
+author: "Kade Spaulding"
+date: "2026-08-26"
+output: pdf_document
+---
+
+```{text}
+PSEUDO CODE 1
+
+MAKE createBingo function
+
+  ASSIGN each column  5 numbers from its assigned range of 15 numbers without       replacement
+  
+  MAKE card matrix (5x5) by binding columns assigned
+  
+  NAME each column B, I, N, G, O
+  
+  ASSIGN free space to middle (row 3 column 3)
+  
+  RETURN numbered card
+```
+
+```{r}
+rm(list=ls())
+
+createBingo <- function(){
+  #ranges
+  B <- sample(1:15, 5)
+  I <- sample(16:30, 5)
+  N <- sample(31:45, 5)
+  G <- sample(46:60, 5)
+  O <- sample(61:75, 5)
+  
+  card <- cbind(B,I,N,G,O)
+  colnames(card) <- c("B", "I", "N", "G","O") #name columns
+  
+  card[3,3] <- 0 #free space
+  return(card)
+}
+
+bingo_card <- createBingo()
+bingo_card
+```
+
+```{text}
+PSEUDO CODE 2
+
+CREATE markBingo function with inputs bingo_card and number
+
+  CREATE empty 5x5 matrix with all 0s (not called)
+
+  ASSIGN 1 to free space (middle, row 3 and column 3)
+
+  IF number IN bingo_card
+
+    CHANGE corresponding position to 1
+
+  RETURN marked card
+```
+
+```{r}
+markBingo <- function(bingo_card, number){
+  #create card we mark
+  marked <- matrix(0,nrow=5, ncol=5)
+  marked[3,3] <- 1
+  
+  #check if number called is in bingo_card
+  if (number %in% bingo_card){
+    marked[bingo_card==number] <- 1
+  }
+  
+  return(marked)
+}
+number_called <- bingo_card[1,1]
+marked_card <- markBingo(bingo_card, number_called)
+marked_card
+```
+
+```{text} 
+PSEUDO CODE 3
+
+CREATE checkBingo function
+
+  ASSIGN row sums to variable
+
+  ASSIGN column sums to variable
+
+  ASSIGN diagonal sums to variable
+
+  IF any row sum is 5
+  
+    RETURN win statement
+  
+  IF any column sum is 5
+  
+    RETURN win statement
+  
+  IF any diagonal sum is 5
+  
+    RETURN win statement
+  
+  OTHERWISE
+  
+    RETURN loss statement
+```
+
+```{r}
+checkBingo <- function(marked_card){
+  row_sum <- rowSums(marked_card)
+  col_sum <- colSums(marked_card)
+  diag_sum1 <- sum(diag(marked_card))
+  diag_sum2 <- sum(marked_card[cbind(1:5, 5:1)])
+  diag_sum <- c(diag_sum1, diag_sum2)
+  
+  if (any(row_sum == 5)){
+    return("BINGO, You Win")
+  }
+  
+  if (any(col_sum == 5)){
+    return("BINGO, You Win")
+  }
+  
+  if (any(diag_sum==5)){
+    return("BINGO, You Win")
+  }
+  return("You did not win a Bingo")
+}
+```
+Test
+```{r}
+test_card_all <- matrix(1,nrow=5,ncol=5)
+checkBingo(test_card_all)
+
+test_card_row <- matrix(0, nrow=5, ncol=5)
+test_card_row[1,] <- 1
+checkBingo(test_card_row)
+
+test_card_col <- matrix(0, nrow=5, ncol=5)
+test_card_col[,1] <- 1
+checkBingo(test_card_col)
+
+test_card_diag <- matrix(0, nrow = 5, ncol = 5)
+diag(test_card_diag) <- 1
+checkBingo(test_card_diag)
+
+test_card_none <- matrix(0, nrow=5, ncol=5)
+checkBingo(test_card_none)
+```
